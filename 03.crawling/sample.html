@@ -1,0 +1,94 @@
+<html>
+  <head>
+    <link rel="stylesheet" herf="https://sample.css">
+    ..
+    <script>
+      ..
+    </script>
+    <script src="https://sample.js"></script>
+    ..
+  </head>
+
+  <body>
+    <div style="background-color:green; color:blue;">
+      <p>
+        태그=div(1)-p(1), 클래스=style
+      </p>
+    </div>
+    
+    <div class="first">
+      <h1>
+        태그=div(2)-h1(1), 클래스=first(1)
+      </h1>
+    </div>
+    
+    <div class="first">
+      <h2>
+        태그=div(3)-h2(1), 클래스=first(2)
+      </h2>
+    </div>
+  
+    <div class="first" id="apple">
+      <h3 id="cat">
+        태그=div(4)-h3(1), 클래스=first(3), 아이디=apple(1)-cat(1)
+      </h3>
+    </div>
+    
+    <div>
+      <button type="button" onclick="document.getElementById('cat').style.color='red';">
+        태그=div(5)-button(1)
+      </button>
+      
+      <button type="button" onclick="ChangeColor();">
+        태그=div(5)-button(2)
+      </button>
+    </div>
+
+    <h1>
+      태그=h1(2)
+    </h1>
+
+    <div class="second" id="grape">
+      <ul>
+        <li>
+          <p address="seoul">
+            <h1>
+              태그=div(6)-ul(1)-li(1)-p(2)-h1(3), 클래스=second, 아이디=grape(1), address=seoul(1)
+            </h1>
+          </p>
+        </li> 
+      <ul>
+    </div>
+
+    <div>
+      <p>
+        태그=div(7)-p(3)
+        <h1>
+          태그=div(7)-p(3)-h1(4)
+        </h1>
+        
+        <div>
+          <h1>
+            태그=div(7)-p(3)-div(8)-h1(5)
+          </h1>
+        </div>
+        
+        <div>
+          <h2>
+            태그=div(7)-p(3)-div(9)-h2(2)
+          </h2>
+        </div>
+      </p>
+    </div>
+
+    <div>
+      <june1 name="junil" age="47">
+        <h1>
+          태그=div(10)-june1(1)-h1(6), name=junil, age=47
+        </h1>
+      </june1>
+    </div>
+
+  </body>
+</html>
+

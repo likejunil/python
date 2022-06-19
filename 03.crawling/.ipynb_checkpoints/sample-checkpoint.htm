@@ -1,0 +1,49 @@
+<html>
+  <head>
+    <link rel="stylesheet" herf="https://sample.css">
+    ..
+    <script>
+      ..
+    </script>
+    <script src="https://sample.js"></script>
+    ..
+  </head>
+
+  <body>
+    <div style="background-color:green; color:blue;">
+      <p>
+        tag의 style 속성이 css보다 우선순위가 높다.
+      </p>
+    </div>
+    
+    <div class="first">
+      <h1>
+        일반 속성보다 class 속성이 우선순위가 높다.
+      </h1>
+    </div>
+    
+    <div class="first">
+      <h2>
+        자식의 속성이 부모의 속성보다 우선순위가 높다.
+      </h2>
+    </div>
+  
+    <div class="first" id="apple">
+      <h3 id="cat">
+        id 속성이 class 속성보다 우선순위가 높다.
+      </h3>
+    </div>
+    
+    <div>
+      <button type="button" onclick="document.getElementById('cat').style.color='red';">
+        격렬한 겸손으로 눌러
+      </button>
+      
+      <button type="button" onclick="ChangeColor();">
+        얌전히 거만하게 눌러
+      </button>
+    </div>
+    
+  </body>
+</html>
+
