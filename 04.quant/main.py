@@ -17,6 +17,7 @@ headers = {
 def request_naver(arg_code: str, arg_page: int) -> BeautifulSoup:
     """
     naver에 주식 일일 시세를 조회한다.
+
     :param arg_code: 6자리 종목 코드 ex) "005930", "000660"
     :param arg_page: 페이지 정보 ex) 1, 2
     :return: BeautifulSoup 객체
