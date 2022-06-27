@@ -29,6 +29,13 @@ def request_naver(arg_code: str, arg_page: int) -> BeautifulSoup:
 
 
 def get_tr_list(arg_soup: BeautifulSoup) -> element.ResultSet:
+    """
+    인자로부터 첫번째 <table class='type2'> 태그를 찾고..
+    해당 table 에 종속된
+
+    :param arg_soup:
+    :return:
+    """
     table_attr_class = "type2"
     tr_attr_dict = {'onmouseover': 'mouseOver(this)'}
 
