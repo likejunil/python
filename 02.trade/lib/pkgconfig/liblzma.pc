@@ -1,0 +1,19 @@
+#
+# Author: Lasse Collin
+#
+# This file has been put into the public domain.
+# You can do whatever you want with this file.
+#
+
+prefix=/Users/june1/01.personal/01.program/01.code/02.python/02.trade
+exec_prefix=/Users/june1/01.personal/01.program/01.code/02.python/02.trade
+libdir=/Users/june1/01.personal/01.program/01.code/02.python/02.trade/lib
+includedir=/Users/june1/01.personal/01.program/01.code/02.python/02.trade/include
+
+Name: liblzma
+Description: General purpose data compression library
+URL: https://tukaani.org/xz/
+Version: 5.2.5
+Cflags: -I${includedir}
+Libs: -L${libdir} -llzma
+Libs.private: -pthread -lpthread

@@ -1,0 +1,5 @@
+#!/Users/june1/01.personal/01.program/01.code/02.python/02.trade/bin/python3.10
+
+from idlelib.pyshell import main
+if __name__ == '__main__':
+    main()

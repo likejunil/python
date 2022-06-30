@@ -1,0 +1,11 @@
+prefix=/Users/june1/01.personal/01.program/01.code/02.python/02.trade
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+toolexeclibdir=${libdir}
+includedir=/Users/june1/01.personal/01.program/01.code/02.python/02.trade/include
+
+Name: libffi
+Description: Library supporting Foreign Function Interfaces
+Version: 3.3
+Libs: -L${toolexeclibdir} -lffi
+Cflags: -I${includedir}

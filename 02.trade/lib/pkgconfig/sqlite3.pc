@@ -1,0 +1,13 @@
+# Package Information for pkg-config
+
+prefix=/Users/june1/01.personal/01.program/01.code/02.python/02.trade
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: SQLite
+Description: SQL database engine
+Version: 3.38.5
+Libs: -L${libdir} -lsqlite3
+Libs.private: -lz 
+Cflags: -I${includedir}

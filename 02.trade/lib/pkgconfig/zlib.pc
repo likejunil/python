@@ -1,0 +1,13 @@
+prefix=/Users/june1/01.personal/01.program/01.code/02.python/02.trade
+exec_prefix=/Users/june1/01.personal/01.program/01.code/02.python/02.trade
+libdir=/Users/june1/01.personal/01.program/01.code/02.python/02.trade/lib
+sharedlibdir=/Users/june1/01.personal/01.program/01.code/02.python/02.trade/lib
+includedir=/Users/june1/01.personal/01.program/01.code/02.python/02.trade/include
+
+Name: zlib
+Description: zlib compression library
+Version: 1.2.12
+
+Requires:
+Libs: -L${libdir} -L${sharedlibdir} -lz
+Cflags: -I${includedir}
