@@ -1,7 +1,6 @@
 import requests
 from bs4 import BeautifulSoup, element
 from datetime import datetime
-import time
 import pandas as pd
 
 # -----------------------
@@ -12,6 +11,14 @@ headers = {
 }
 
 NO_DATA: str = ""
+DATE: str = "날짜"
+CLOSE: str = "종가"
+OPEN: str = "시가"
+HIGH: str = "고가"
+LOW: str = "저가"
+VOLUME: str = "거래량"
+DIFF: str = "전일비"
+COLUMNS = [DATE, CLOSE, DIFF, OPEN, HIGH, LOW, VOLUME]
 
 
 # -----------------------
@@ -98,21 +105,6 @@ def convert_naver_day_sise(arg_list: list):
                 l1[i] = int(d1.replace(",", ""))
 
 
-def get_key_list(arg_list: list, arg_i: int) -> set:
-    """
-    주어진 행렬(이중 list)에서 특정 컬럼의 값들을 뽑아내어 set 으로 반환한다.\n
-    특정 컬럼의 값들을 기준으로 주어진 행렬과 다른 행렬이 같은지 다른지 확인한다.\n
-
-    :param arg_list: 행렬(이중 list)
-    :param arg_i: 선택하려는 컬럼의 index
-    :return: 선택한 컬럼들을 모아 생성한 set
-    """
-    ret = set()
-    for l1 in arg_list:
-        ret.add(l1[arg_i])
-    return ret
-
-
 def get_days_sise_by_page(arg_code: str, arg_page: int) -> pd.DataFrame:
     """
     naver 에 일일 시세(특정 종목의 특정 페이지)를 조회하여 list 로 생성 및 반환한다.\n
@@ -127,8 +119,48 @@ def get_days_sise_by_page(arg_code: str, arg_page: int) -> pd.DataFrame:
     tr_list = get_tr_list(soup)
     get_td_list_from_tr_list(ret_list, tr_list)
     convert_naver_day_sise(ret_list)
-    ret = pd.DataFrame(ret_list)
+    ret = pd.DataFrame(ret_list, columns=COLUMNS)
     return ret
+
+
+def load_data(arg_filename: str) -> pd.DataFrame:
+    """
+    시세 데이터가 담겨 있는 csv 파일을 읽어서 DataFrame 을 생성 반환한다.
+    DATE 컬럼을 datetime 타입으로 변환한다.
+    datetime 타입을 파일에 기록하면 str 으로 변환되기 때문이다.
+    만약 DATE 컬럼에 대하여 오름차순으로 정렬한다.
+
+    :param arg_filename: 읽고자 하는 파일의 이름
+    :return: 파일의 내용이 담긴 DataFrame 객체
+    """
+    df = pd.read_csv(arg_filename)
+    df[DATE] = pd.to_datetime(df[DATE])
+    return df.sort_values(by=DATE, ascending=True, na_position='last')
+
+
+def save_data(arg_filename: str, arg_df: pd.DataFrame) -> None:
+    """
+    DataFrame 의 index 를 DATE 로 변경한다.
+    DataFrame 을 파일에 저장한다.
+
+    :param arg_filename: DataFrame 을 저장할 파일의 이름
+    :param arg_df: 파일에 저장할 DataFrame 객체
+    :return:
+    """
+    if arg_df.index.name is None:
+        arg_df = arg_df.set_index(DATE)
+    elif arg_df.index.name != DATE:
+        arg_df = arg_df.reset_index().set_index(DATE)
+    arg_df.sort_values(by=DATE, ascending=True, na_position='last').to_csv(arg_filename)
+
+
+def load_code_list() -> list[str]:
+    """
+    추후 종목 목록을 외부에서 불러와 넘겨준다.\n
+
+    :return: 코스피, 코스닥 시장의 종목 코드를 담은 list
+    """
+    return ["005930", "000660"]
 
 
 def get_code_func():
@@ -136,10 +168,9 @@ def get_code_func():
     종목 코드 목록을 불러와서 로컬 변수에 담는다.\n
     종목 코드를 하나씩 불러서 반환하는 함수를 반환한다.\n
 
-    :return: 종목 코드를 하나씩 불러오는 함수를 반환한다.
+    :return: 종목 코드를 하나씩 불러오는 함수를 반환
     """
-    # 추후 외부에서 종목 코드 목록을 불러오는 방법으로 수정한다.
-    item_code_list: list = ["005930"]
+    item_code_list: list = load_code_list()
     index: int = 0
 
     def pick() -> list:
@@ -164,37 +195,34 @@ def days_proc(arg_code: str) -> None:
     :param arg_code: 조회할 종목의 코드
     :return:
     """
-    # 1. 파일을 연다.
-    # ------------------------
-    file_name: str = "./data/{}.csv".format(arg_code)
-    pd.read_csv(file_name)
+    load_df = load_data("{}.csv".format(arg_code))
+    last_date = load_df.iloc[-1][DATE]
 
-    # total_data_list: list = []
-    # prev_key_set: set = set()
-    #
-    # page: int = 1
-    #
-    # data_list = get_data_by_page(arg_code, page)
-    # key_set = get_key_list(data_list, 0)
-    # if prev_key_set == key_set:
-    #     return
-    # prev_key_set = key_set
-    # page += 1
-    # for d in data_list:
-    #     total_data_list.append(d)
+    page: int = 1
+    while True:
+        new_df: pd.DataFrame = get_days_sise_by_page(arg_code, page)
+        cond: bool = new_df[DATE] == last_date
+        if len(new_df[cond]) > 0:
+            break
+
+
+def main_proc():
+    """
+    본 소스의 목적은 매일 코스피, 코스닥 종목들에 대하여 일일 시세(시고저종)를 불러와서 파일로 저장하는 것이다.\n
+    data 디렉토리에 종목별로 별도의 파일이 존재한다.\n
+
+    :return:
+    """
+    pick_code = get_code_func()
+    while True:
+        ret_code: str = pick_code()
+        if ret_code == NO_DATA:
+            break
+        days_proc(ret_code)
 
 
 # -----------------------
 # main
 # -----------------------
 if __name__ == "__main__":
-    '''
-    본 소스의 목적은 매일 코스피, 코스닥 종목들에 대하여 일일 시세(시고저종)를 불러와서 파일로 저장하는 것이다.\n
-    data 디렉토리에 종목별로 별도의 파일이 존재한다.\n
-    '''
-    pick_code = get_code_func()
-    while True:
-        code: str = pick_code()
-        if code == NO_DATA:
-            break
-        days_proc(code)
+    main_proc()
