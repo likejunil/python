@@ -1,6 +1,11 @@
 from collections import namedtuple
 
 if __name__ == '__main__':
+    """
+    일반적인 tuple 은 각각의 요소에 index 를 통해서 접근한다.
+    namedtuple 은 마치 dict 와 같이 각각의 요소에 key(name)를 통하여 접근할 수 있다.
+    """
+
     # Point = namedtuple("_3D", ['x', 'y', 'z'])
     # Point = namedtuple("_3D", ('x', 'y', 'z'))
     # Point = namedtuple("_3D", {'x', 'y', 'z'})
