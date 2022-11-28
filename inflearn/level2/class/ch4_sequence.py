@@ -111,6 +111,10 @@ def func3() -> None:
 def func4() -> None:
     """
     Dict 를 활용하는 방법을 학습한다.
+
+    . setdefault()
+    . collections.defaultdict()
+    . hash()
     """
 
     source = (
