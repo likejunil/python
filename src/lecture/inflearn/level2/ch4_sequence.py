@@ -1,5 +1,8 @@
 from collections import defaultdict
+from types import MappingProxyType
 from typing import List, Tuple, Dict, Set, Generator, Iterable
+from functools import reduce
+from dis import dis
 
 # https://www.daleseo.com/python-typing/
 # https://www.daleseo.com/python-mypy/
@@ -34,6 +37,9 @@ def func1() -> None:
 
     . map()
     . filter()
+    . reduce()
+    . range()
+    . enumerate()
 
     . ord() -> int:
     . chr() -> str:
@@ -52,12 +58,32 @@ def func1() -> None:
     # map
     m1: map = map(ord, data)
     print(f'type=|{type(m1)}| value=|{m1}|')
+
     # filter
     f1: filter = filter(lambda x: x > 40, m1)
     print(f'type=|{type(f1)}| value=|{f1}|')
+
     # list
     l1: List[int] = list(f1)
     print(f'type=|{type(l1)}| value=|{l1}|')
+
+    # reduce
+    r1: reduce = reduce(lambda prev, curr: prev + curr, l1)
+    print(f'type=|{type(r1)}| value=|{r1}|')
+    r2: reduce = reduce(lambda prev, curr: prev * curr, range(3, 10), 2)
+    print(f'type=|{type(r2)}| value=|{r2}|')
+
+    # range
+    v_range = range(1, 3)
+    print(f'range=|{type(v_range)}|')
+    for m in v_range:
+        print(f'type=|{type(m)}| value=|{m}|')
+
+    # enumerate
+    v_enumerate = enumerate(v_range, 1)
+    print(f'enumerate=|{type(v_enumerate)}|')
+    for m in v_enumerate:
+        print(f'type=|{type(m)}| value=|{m}|')
 
     v_chr = '준'
     v_ord = ord(v_chr)
@@ -82,7 +108,7 @@ def func2() -> None:
     data = '효진!@#$%^&*()_+'
     print(f'문자열=|{data}| type=|{type(data)}|')
 
-    # generator
+    # generator 는 메모리에 관련된 효율적 해법에 도움이 된다.
     ucode_generator: Generator[int] = (ord(n) for n in data)
     print(f'value=|{ucode_generator}| type=|{type(ucode_generator)}|')
 
@@ -100,10 +126,12 @@ def func3() -> None:
     fruit_list = ['apple', 'strawberry', 'orange', 'grape', 'banana']
     print(f'1.원래의 과일 목록=|{fruit_list}|')
 
+    # 원본을 보존하는 정렬
     sorted_fruit = sorted(fruit_list, reverse=True, key=lambda x: x[-2])
     print(f'2.정렬한 과일 목록(원본 보존)=|{sorted_fruit}|')
     print(f'2.원래의 과일 목록=|{fruit_list}|')
 
+    # 원본 자체를 변경하는 정렬
     fruit_list.sort(reverse=True, key=len)
     print(f'3.정렬한 과일 목록(원본 수정)=|{fruit_list}|')
 
@@ -126,10 +154,11 @@ def func4() -> None:
     )
 
     # dict comprehension, unpacking 사용
+    # iterator 로부터 직관적으로 쉽게 dict 를 생성할 수 있다.
     a_dict = {k: v for k, v in source}
     print(f'dict comprehension=|{a_dict}|')
 
-    #
+    # 중복되는 키가 많을 경우 다음과 같은 방법이 가능하다.
     b_dict = {}
     for k, v in source:
         if k not in b_dict:
@@ -151,22 +180,48 @@ def func4() -> None:
 
     # dict 의 기본값을 지정할 수 있다.
     c_dict = defaultdict(list)
-    d_dict = {}
     for k, v in source:
         c_dict[k].append(v)
-
-        # setdefault() 는 인자로 주어진 key 에 해당하는 value 를 반환한다.
-        # 해당 key 가 있으면 value 를 반환한다.
-        # 해당 key 가 없으면 두번째 인자를 value 로 엔트리를 생성하고 value 를 반환한다.
-        d_dict.setdefault(k, []).append(v)
-
     print(f'c_dict=|{c_dict}|')
-    print(f'd_dict=|{d_dict}|')
 
+    # setdefault() 는 인자로 주어진 key 에 해당하는 value 를 반환한다.
+    # 해당 key 가 있으면 value 를 반환한다.
+    # 해당 key 가 없으면 두번째 인자를 value 로 엔트리를 생성하고 value 를 반환한다.
     tmp_dict = {'a': 1}
     value1 = tmp_dict.setdefault('a', 2)
     value2 = tmp_dict.setdefault('b', 2)
     print(f'value1=|{value1}| value2=|{value2}| tmp_dict=|{tmp_dict}|')
+
+    # dict 를 추가, 변경, 삭제가 불가능한 상태로 변경할 수 있다.
+    frozen_dict = MappingProxyType(tmp_dict)
+    print(f'frozen_dict=|{frozen_dict}| type=|{type(frozen_dict)}|')
+    try:
+        frozen_dict['c'] = 3
+    except TypeError as e:
+        print(f'{e}')
+
+
+def func5() -> None:
+    """
+    set 의 특징을 이해한다.
+    """
+
+    # 아래의 문장이 효율이 좋다.
+    print(dis('set([1])'))
+    print(dis('{1}'))
+
+    # 일반적인 집합
+    tmp_set = {1}
+    tmp_set.add(2)
+    print(f'tmp_set=|{tmp_set}|')
+
+    # 추가, 변경, 삭제가 불가능한 집합
+    frozen_set = frozenset(['blue', 'red', 'white'])
+    print(f'type=|{type(frozen_set)}| value=|{frozen_set}|')
+    try:
+        frozen_set.add('green')
+    except AttributeError as e:
+        print(f'{e}')
 
 
 if __name__ == '__main__':
@@ -174,3 +229,4 @@ if __name__ == '__main__':
     func2()
     func3()
     func4()
+    func5()
