@@ -80,7 +80,7 @@ class Person(object):
         return "{{'name': '{}', 'age': {}}}".format(self.name, self.age)
 
     def __eq__(self, other):
-        return self.name == other.data and self.age == other.age
+        return self.name == other.name and self.age == other.age
 
 
 # -----------------------------------
