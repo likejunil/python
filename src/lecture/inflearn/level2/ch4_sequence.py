@@ -25,7 +25,7 @@ def func1() -> None:
     __iter__ 의 의미를 이해한다.
     __iter__ 를 구현하여 반복적인 요소 반환을 가능하게 한다.
 
-    map, filter 를 이해한다.
+    map, filter, reduce 를 이해한다.
     이러한 class 들의 생성자는 iter 를 인자로 받는다.
 
     comprehension 을 이해한다.
