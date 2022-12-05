@@ -1,4 +1,5 @@
 from inspect import signature
+from typing import Union
 
 """
 함수에서 주의깊게 봐야할 속성은 __call__, __code__ 2가지이다.
@@ -89,11 +90,51 @@ def func4():
     print(f'type(s)=|{type(s)}| signature()=|{s}|')
 
 
+class Average:
+    def __init__(self):
+        self.data = []
+
+    def __call__(self, num: Union[int, float]) -> float:
+        self.data.append(num)
+        average = sum(self.data) / len(self.data)
+        print(f'데이타=|{self.data}| 평균=|{average:.2f}|')
+        return average
+
+
+def create_closure():
+    """
+    closure 를 반환하는 함수
+    """
+
+    data = []
+
+    def avg_closure(num: Union[int, float]) -> float:
+        data.append(num)
+        average = sum(data) / len(data)
+        print(f'데이타=|{data}| 평균=|{average:.2f}|')
+        return average
+
+    return avg_closure
+
+
+def func5():
+    avg = Average()
+    avg(9.3)
+    avg(9.9)
+    avg(11)
+
+    closure = create_closure()
+    closure(4.2)
+    closure(4.9)
+    closure(12)
+
+
 if __name__ == '__main__':
     func1()
     func2()
     func3()
     func4()
+    func5()
 
 # lambda
 # callable()
