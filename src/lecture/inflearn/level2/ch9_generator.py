@@ -156,9 +156,56 @@ def func2():
     #     print(x)
 
 
+class WordSplitter:
+    """
+    본 클래스는 __next__ 를 구현하였으므로 next() 함수의 인자가 될 수는 있지만
+    __iter__ 가 구현되지 않았으므로 Iterator 가 될 수는 없다.
+    """
+
+    def __init__(self, text):
+        self.index = 0
+        self.data = text.split(' ')
+
+    def __next__(self):
+        try:
+            ret = self.data[self.index]
+        except IndexError:
+            print('잘못된 인덱스를 참조, StopIteration 발생, Iterator 종료')
+            raise StopIteration
+
+        self.index += 1
+        return ret
+
+
+def func3():
+    sp = WordSplitter("너에게 전화를 하려다 수화기를 놓았네")
+    print(next(sp))
+    print(next(sp))
+    print(next(sp))
+    print(next(sp))
+    print(next(sp))
+    print(f'isinstance(sp, Iterator)=|{isinstance(sp, abc.Iterator)}|')
+
+
+def func4():
+    t1 = "날아라 병아리, 독수리에게 이겨보자."
+    i1 = iter(t1)
+    print(f'iter(문자열)의 타입=|{type(i1)}| isinstance(i1, Generator)=|{isinstance(i1, abc.Generator)}|')
+    for m in t1:
+        print(m)
+
+    t2 = [1, 2, 3, 4]
+    i2 = iter(t2)
+    print(f'iter(리스트)의 타입=|{type(i2)}| isinstance(i2, Generator)=|{isinstance(i2, abc.Generator)}|')
+    for m in t2:
+        print(m)
+
+
 if __name__ == '__main__':
     func1()
     func2()
+    func3()
+    func4()
 
 """
 왜 Iterator 가 던지는 StopIteration 은 처리하면서
