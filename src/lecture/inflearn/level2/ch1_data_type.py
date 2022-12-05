@@ -110,9 +110,10 @@ def about_print():
     print("4) repr,eval ::", ret_eval)
 
     # list 를 출력할 때는 __repr__ 을 사용
-    person_list = []
-    person_list.append(Person('lion', 10))
-    person_list.append(Person('dog', 20))
+    person_list = [
+        Person('lion', 10),
+        Person('dog', 20)
+    ]
     print("5) list ::", person_list)
 
     # 개발자가 첨부한 해당 클래스에 대한 주석 확인
