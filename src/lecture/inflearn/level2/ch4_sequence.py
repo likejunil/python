@@ -4,9 +4,6 @@ from typing import List, Tuple, Dict, Set, Generator, Iterable
 from functools import reduce
 from dis import dis
 
-# https://www.daleseo.com/python-typing/
-# https://www.daleseo.com/python-mypy/
-
 """
 -------------------------------------------
  sequence : 순서가 있는 데이터의 나열
