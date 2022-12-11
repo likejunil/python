@@ -1,79 +1,65 @@
-class Person(object):
-    """
-    Person 클래스
-    name: 이름
-    age: 나이
-    """
-    total_person = 0
-
-    def __init__(self, name, age):
-        self.name = name
-        self.age = age
-        Person.total_person += 1
-
-    def __repr__(self):
-        return '"name": {}, "age": {}'.format(self.name, self.age)
-
-    def __eq__(self, other):
-        return self.name == other.data and self.age == other.age
-
-    def __del__(self):
-        Person.total_person -= 1
-
-    def get_name(self):
-        return self.name
-
-    @classmethod
-    def get_total_person(cls):
-        return cls.total_person
-
-    @staticmethod
-    def size():
-        if Person.total_person < 2:
-            return "small"
-        elif Person.total_person < 5:
-            return "middle"
-        else:
-            return "big"
-
-
-class Student(Person):
-    """
-    Student 클래스
-    major: 전공
-    grade: 학년
-    """
-    id_list = []
-
-    def __init__(self, name, age, student_id, major, grade):
-        super().__init__(name, age)
-        self.id = student_id
-        self.major = major
-        self.grade = grade
-        Student.id_list.append(student_id)
-
-    def __repr__(self):
-        return super().__repr__() + '\n' \
-               + '"id": {}, "major": {}, "grade": {}'.format(self.id, self.major, self.grade)
-
-    def __eq__(self, other):
-        return self.id == other.id
-
-    @classmethod
-    def get_id_list(cls):
-        return cls.id_list[:]
-
+"""
+. 모든 클래스는 type 클래스로부터 만들어진다.
+. 모든 클래스는 object 클래스를 상속받는다.
+. type 은 클래스를 만들고 클래스는 인스턴스를 만든다.
+. 클래스와 인스턴스 모두 객체이다.
+.
+"""
 
 if __name__ == '__main__':
-    s1 = Student('준일', 48, '9515', '수학', 4)
-    s2 = Student('효진', 43, '9515', '법학', 3)
-    print(s1)
-    print(s2)
-    print('제 이름은 {} 입니다.'.format(s1.get_name()))
+    class Family:
+        last_name = '권'
+        member_count = 0
 
-    total_person = Person.get_total_person()
-    print('총 인구수=[{}]'.format(total_person))
-    print('규모=[{}]'.format(Person.size()))
+        def __init__(self, name):
+            self.name = name
+            # 클래스 속성을 변경할 때는 반드시 클래스의 이름으로 접근해야만 한다.
+            Family.member_count += 1
 
-    id_list = Student.get_id_list()
-    print('학생 아이디=[{}]'.format(id_list))
+        def __repr__(self):
+            # 클래스 속성을 조회할 때는 인스턴스의 이름으로 접근하는 것이 가능하다.
+            # 클래스 속성과 인스턴스 속성의 이름이 같을 때는.. 접근자를 주의해서 사용해야 한다.
+            return f'이름=|{self.name}| 수=|{self.member_count}|'
+
+        @classmethod
+        def getInfo(cls):
+            return f'"{cls.last_name}"씨 가족의 구성원은 {cls.member_count}명 입니다.'
+
+
+    f1 = Family('준일')
+    print(f1)
+    f2 = Family('효진')
+    print(f2)
+    f3 = Family('강')
+    print(f3)
+    print(Family.getInfo())
+
+    # 인스턴스를 통해 클래스 속성에 접근하여 값을 대입하면..
+    # 새로운 인스턴스 속성이 생성된다.
+    f3.member_count = 100
+    print(f3, Family.getInfo(), sep='\n')
+
+    print()
+    print(f'======= object 클래스의 정보 =======\n'
+          f'value=|{object}|\n'
+          f'type=|{type(object)}|\n'
+          f'__dict__=|{object.__dict__}|\n'
+          f'dir()=|{dir(object)}|')
+
+    print()
+    print(f'======= Family 클래스의 정보 =======\n'
+          f'value=|{Family}|\n'
+          f'type=|{type(Family)}|\n'
+          f'__dict__=|{Family.__dict__}|\n'
+          f'dir()=|{dir(Family)}|\n'
+          f'only=|{set(dir(Family)) - set(dir(object))}|')
+
+    family = Family(1)
+    family.member_count = 100
+    print()
+    print(f'======= Family 인스턴스의 정보 =======\n'
+          f'value=|{family}|\n'
+          f'type=|{type(family)}|\n'
+          f'__dict__=|{family.__dict__}|\n'
+          f'dir()=|{dir(family)}|\n'
+          f'only=|{set(dir(family)) - set(dir(Family))}|')
