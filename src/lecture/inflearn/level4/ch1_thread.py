@@ -1,13 +1,20 @@
 """
+concurrent.futures 는 3.2 이상에서 포함되는 표준 라이브러리이다.
+
 """
 
-import sys
 import logging
-from threading import Thread
 import time
+from threading import Thread
+from concurrent.futures import ThreadPoolExecutor
 
 
-def thread_func(name: str, data):
+def thread_func(*args):
+    # map(func, *iterables) 의 경우 첫번째 인자로 주어지는 함수는 인자를 하나만 받을 수 있다.
+    # 2개 이상의 인자를 받고 싶으면 tuple 로 묶어서 전달한다.
+    # 따라서 tuple 안에 tuple 이 있을 경우를 처리해야 한다.
+    get_args = args if len(args) > 1 else args[0]
+    name, data = get_args
     logging.info(f'{name} => 쓰레드가 실행되었습니다.')
 
     s = time.time()
@@ -17,11 +24,12 @@ def thread_func(name: str, data):
     e = time.time()
 
     logging.info(f'{name} => 쓰레드를 종료합니다. ({e - s:.6f}초 시간 소요)')
+    return total
 
 
-if __name__ == '__main__':
+def log():
     # 문자열 출력 방식
-    print('%(fruit)s, %(color)s' % {'fruit': 'apple', 'color': 'red'})
+    # print('%(fruit)s, %(color)s' % {'fruit': 'apple', 'color': 'red'})
     logging.basicConfig(
         # 메시지 표현 형식
         format='%(asctime)s %(message)s',
@@ -29,25 +37,30 @@ if __name__ == '__main__':
         level=logging.INFO,
         # 시간 표현 형식
         datefmt='%Y-%m-%d %H:%M:%S')
+
+
+def func1():
+    log()
     logging.info('main => 쓰레드 공부를 시작합니다.')
 
     # 인자는 반드시 tuple 로 전달한다.
     # join() 을 호출하지 않아도 sub-thread 는 무사히 진행된다.
     # daemon 옵션은 모든 thread 가 True 여야만 적용된다.
-    t1 = Thread(target=thread_func, args=('준일', range(1_000_000)), daemon=True)
-    t2 = Thread(target=thread_func, args=('효진', range(2_000_000)), daemon=True)
-    t3 = Thread(target=thread_func, args=('이강', range(3_000_000)), daemon=True)
+    daemon_opt = False
+    t = (Thread(name="red", target=thread_func, args=('준일', range(10_000_000)), daemon=daemon_opt),
+         Thread(name="black", target=thread_func, args=('효진', range(20_000_000)), daemon=daemon_opt),
+         Thread(name="green", target=thread_func, args=('이강', range(30_000_000)), daemon=daemon_opt))
     logging.info('main => 쓰레드 생성 완료')
 
-    for m in (t1, t2, t3):
+    for m in t:
         # m.daemon = True
         m.start()
-        print(f'{m.getName()} daemon=|{m.isDaemon()}|')
+        logging.info(f'{m.getName()} daemon=|{m.isDaemon()}|')
     logging.info('main => 쓰레드들 실행 완료')
 
     # 다른 thread 의 종료를 기다릴 것인가?
-    # for m in t:
-    #     m.join()
+    for m in t:
+        m.join()
 
     # logging.debug('main(debug) => 쓰레드를 종료합니다.')
     logging.info('main(info) => 쓰레드를 종료합니다.')
@@ -55,4 +68,30 @@ if __name__ == '__main__':
     # logging.error('main(error) => 쓰레드를 종료합니다.')
     # logging.critical('main(critical) => 쓰레드를 종료합니다.')
 
-    # sys.exit()
+
+def func2(mode=2):
+    log()
+    logging.info("futures 를 통한 thread handling 학습을 시작합니다.")
+
+    max_workers = 4
+    if mode == 1:
+        executor = ThreadPoolExecutor(max_workers=max_workers)
+        ret1 = executor.submit(thread_func, '준일', range(40_000_000))
+        ret2 = executor.submit(thread_func, '효진', range(20_000_000))
+        logging.info(f'첫번째 쓰레드 실행 결과=|{ret1.result()}|')
+        logging.info(f'두번째 쓰레드 실행 결과=|{ret2.result()}|')
+    else:
+        args = [
+            ('준일', range(10_000_000)),
+            ('효진', range(20_000_000))
+        ]
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            ret = executor.map(thread_func, args)
+            logging.info(list(ret))
+
+    logging.info('main(info) => 쓰레드를 종료합니다.')
+
+
+if __name__ == '__main__':
+    # func1()
+    func2(2)
