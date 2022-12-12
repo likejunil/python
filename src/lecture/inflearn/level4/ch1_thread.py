@@ -1,6 +1,33 @@
 """
 concurrent.futures 는 3.2 이상에서 포함되는 표준 라이브러리이다.
 
+<< mutex 사용하기 >>
+lock = threading.Lock()
+
+1) 첫번째 방법
+lock.acquire()
+...
+lock.release()
+
+2) 두번째 방법
+with lock:
+    ...
+
+<< 생산자, 소비자 패턴 >>
+import queue
+pipe = queue.Queue(maxsize)
+pipe.put(in)
+out = pipe.get()
+pipe.empty()
+pipe.qsize()
+
+
+event = threading.Event()
+event.set() -> 1
+event.clear() -> 0
+event.wait() -> 1:반환, 0:대기
+event.is_set() -> 현재 상태
+
 """
 
 import logging
@@ -92,6 +119,21 @@ def func2(mode=2):
     logging.info('main(info) => 쓰레드를 종료합니다.')
 
 
+def func3():
+    """
+    mutex 사용하기
+    """
+    pass
+
+
+def func4():
+    """
+    Queue 와 Event 사용하여 producer, consumer 패턴 사용하기
+    """
+    pass
+
+
 if __name__ == '__main__':
     # func1()
     func2(2)
+    func3()
