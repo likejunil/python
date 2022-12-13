@@ -130,28 +130,28 @@ def func3():
             self.value = 0
             self.value_lock = Lock()
 
-        def inc(self, value: int, hell: bool = False) -> int:
-            if not hell:
+        def inc(self, value: int, lock: bool = False) -> int:
+            if not lock:
                 self.value_lock.acquire()
             # -----------------------------
             self.value += value
             # -----------------------------
-            if not hell:
+            if not lock:
                 self.value_lock.release()
 
     def thread_task(name, obj, count):
-        hell = True
-        # hell = False
+        lock = True
+        # lock = False
         for m in range(count):
-            obj.inc(m, hell)
+            obj.inc(m, lock)
         print(f'{name}-thread 가 반환하는 결과는 {obj.value}입니다.')
         return obj.value
 
-    a = A()
+    target = A()
     f_list = []
     with ThreadPoolExecutor(max_workers=2) as executor:
-        f_list.append(executor.submit(thread_task, '준일', a, 1_000_000))
-        f_list.append(executor.submit(thread_task, '효진', a, 1_000_000))
+        f_list.append(executor.submit(thread_task, '준일', target, 1_000_000))
+        f_list.append(executor.submit(thread_task, '효진', target, 1_000_000))
 
     for t in f_list:
         print(t.result())
