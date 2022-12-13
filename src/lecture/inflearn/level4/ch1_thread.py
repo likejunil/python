@@ -120,9 +120,9 @@ def func2(mode=2):
 
 def func3():
     """
-    mutex 사용하기
-    - 특정 자원에 대해 2개 이상의 쓰레드가 경합을 벌이는 상황 만들기
-    - threading.Lock() 함수 사용
+    << mutex 사용 >>
+    . 특정 자원에 대해 2개 이상의 쓰레드가 경합을 벌이는 상황 만들기
+    . threading.Lock() 함수 사용
     """
 
     class A:
@@ -130,16 +130,13 @@ def func3():
             self.value = 0
             self.value_lock = Lock()
 
-        def inc(self, value, hell=False):
+        def inc(self, value: int, hell: bool = False) -> int:
             if not hell:
                 self.value_lock.acquire()
-                print('진입했습니다.')
             # -----------------------------
-            time.sleep(1)
             self.value += value
             # -----------------------------
             if not hell:
-                print('해제합니다.')
                 self.value_lock.release()
 
     def thread_task(name, obj, count):
@@ -153,8 +150,8 @@ def func3():
     a = A()
     f_list = []
     with ThreadPoolExecutor(max_workers=2) as executor:
-        f_list.append(executor.submit(thread_task, '준일', a, 3))
-        f_list.append(executor.submit(thread_task, '효진', a, 3))
+        f_list.append(executor.submit(thread_task, '준일', a, 1_000_000))
+        f_list.append(executor.submit(thread_task, '효진', a, 1_000_000))
 
     for t in f_list:
         print(t.result())
