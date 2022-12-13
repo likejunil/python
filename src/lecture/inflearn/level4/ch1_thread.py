@@ -32,7 +32,7 @@ event.is_set() -> 현재 상태
 
 import logging
 import time
-from threading import Thread
+from threading import Thread, Lock
 from concurrent.futures import ThreadPoolExecutor
 
 
@@ -67,7 +67,6 @@ def log():
 
 
 def func1():
-    log()
     logging.info('main => 쓰레드 공부를 시작합니다.')
 
     # 인자는 반드시 tuple 로 전달한다.
@@ -83,6 +82,7 @@ def func1():
         # m.daemon = True
         m.start()
         logging.info(f'{m.getName()} daemon=|{m.isDaemon()}|')
+
     logging.info('main => 쓰레드들 실행 완료')
 
     # 다른 thread 의 종료를 기다릴 것인가?
@@ -97,7 +97,6 @@ def func1():
 
 
 def func2(mode=2):
-    log()
     logging.info("futures 를 통한 thread handling 학습을 시작합니다.")
 
     max_workers = 4
@@ -122,8 +121,45 @@ def func2(mode=2):
 def func3():
     """
     mutex 사용하기
+    - 특정 자원에 대해 2개 이상의 쓰레드가 경합을 벌이는 상황 만들기
+    - threading.Lock() 함수 사용
     """
-    pass
+
+    class A:
+        def __init__(self):
+            self.value = 0
+            self.value_lock = Lock()
+
+        def inc(self, value, hell=False):
+            if not hell:
+                self.value_lock.acquire()
+                print('진입했습니다.')
+            # -----------------------------
+            time.sleep(1)
+            self.value += value
+            # -----------------------------
+            if not hell:
+                print('해제합니다.')
+                self.value_lock.release()
+
+    def thread_task(name, obj, count):
+        hell = True
+        # hell = False
+        for m in range(count):
+            obj.inc(m, hell)
+        print(f'{name}-thread 가 반환하는 결과는 {obj.value}입니다.')
+        return obj.value
+
+    a = A()
+    f_list = []
+    with ThreadPoolExecutor(max_workers=2) as executor:
+        f_list.append(executor.submit(thread_task, '준일', a, 3))
+        f_list.append(executor.submit(thread_task, '효진', a, 3))
+
+    for t in f_list:
+        print(t.result())
+
+    print(f'thread 종료, 최종 결과는 {a.value}입니다.')
 
 
 def func4():
@@ -134,6 +170,7 @@ def func4():
 
 
 if __name__ == '__main__':
+    log()
     # func1()
-    func2(2)
+    # func2(2)
     func3()
