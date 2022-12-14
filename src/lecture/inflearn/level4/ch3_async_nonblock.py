@@ -7,6 +7,7 @@ sync, async
 
 << cpu-bound, io-bound >>
 
+
 << requests >>
 . HTTP 를 사용하기 위해 사용하는 python library
 
@@ -37,8 +38,6 @@ res.text <= utf-8
 res.encoding
 res.json()
 res.cookies
-
-
 
 """
 
