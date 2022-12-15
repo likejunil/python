@@ -1,5 +1,5 @@
 """
-- python 3.4 -> 비동기 표준라이브러리
+- python 3.4 -> 비동기(async) 표준라이브러리
 import asyncio
 
 - python 3.7 미만
@@ -19,13 +19,16 @@ async func():
     ])
 
 비동기 안에서는 비동기를 호출해야 한다.
+    . 예를 들면 time.sleep() 은 동기 함수이다.
+    . 비동기 함수 안에서 사용하면 안된다.
+    . 그래서 asyncio.sleep() 대체 함수를 제공한다.
 requests 은 sync 방식으로 동작한다.
 따라서 async 함수 내부에서 사용해서는 안된다.
 aiohttp 는 async 방식으로 동작하는 http 관련 라이브러리이다.
 
 << aiohttp >>
 s = aiohttp.ClientSession()
-t = asyncio.ensure_future(task(a, b))
+t = asyncio.ensure_future(task(s, a, b))
 tasks.append(t)
 await asyncio.gather(*tasks, return_exceptions=True)
 """
