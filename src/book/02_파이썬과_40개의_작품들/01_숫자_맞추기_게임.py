@@ -22,8 +22,8 @@ def generate_number(min_val: int = 1, max_val: int = 99):
 
 def _read_number():
     """
-    사용자로부터 키보드를 통해 숫자를 읽는 클로저 함수를 생성하고 반환한다.
-    사용자로부터 숫자를 읽은 횟수를 로컬 영역에 저장한다.
+    - 사용자로부터 키보드를 통해 숫자를 읽는 클로저 함수를 생성하고 반환한다.
+    - 사용자로부터 숫자를 읽은 횟수를 로컬 영역에 저장한다.
 
     :return: 클로저 함수
     """
@@ -64,8 +64,8 @@ def _is_correct(answer):
 
     def f(guess):
         """
-        사용자가 제시한 숫자가 정답인지 확인한다.
-        정답이 아닐 경우 대소 비교 정보를 제공한다.
+        - 사용자가 제시한 숫자가 정답인지 확인한다.
+        - 정답이 아닐 경우 대소 비교 정보를 제공한다.
 
         :param guess: 사용자가 제시한 숫자
         :return: 정답 여부
@@ -84,6 +84,11 @@ def _is_correct(answer):
 
 
 def main_proc(target):
+    """
+    사용자로부터 숫자를 읽고 정답과 비교하며 게임을 진행한다.
+
+    :param target: 맞추어야 할 숫자
+    """
     read_number = _read_number()
     is_correct = _is_correct(target)
 
@@ -95,11 +100,13 @@ def main_proc(target):
 
 
 def number_game():
-    # 임의의 숫자를 생성한다.
-    # 사용자로부터 임의의 숫자를 입력 받는다.
-    # 사용자가 도전한 횟수를 기록한다.
-    # 정답과 비교하여 높은지 낮은지 정답인지 판단한다.
-    # 해당 결과를 알려준다.
+    """
+    - 임의의 숫자를 생성한다.
+    - 사용자로부터 임의의 숫자를 입력 받는다.
+    - 사용자가 도전한 횟수를 기록한다.
+    - 정답과 비교하여 높은지 낮은지 정답인지 판단한다.
+    - 해당 결과를 알려준다.
+    """
     target = generate_number()
     main_proc(target)
 
