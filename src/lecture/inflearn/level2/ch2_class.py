@@ -22,7 +22,7 @@ if __name__ == '__main__':
             return f'이름=|{self.name}| 수=|{self.member_count}|'
 
         @classmethod
-        def getInfo(cls):
+        def get_info(cls):
             return f'"{cls.last_name}"씨 가족의 구성원은 {cls.member_count}명 입니다.'
 
 
@@ -32,12 +32,12 @@ if __name__ == '__main__':
     print(f2)
     f3 = Family('강')
     print(f3)
-    print(Family.getInfo())
+    print(Family.get_info())
 
     # 인스턴스를 통해 클래스 속성에 접근하여 값을 대입하면..
     # 새로운 인스턴스 속성이 생성된다.
     f3.member_count = 100
-    print(f3, Family.getInfo(), sep='\n')
+    print(f3, Family.get_info(), sep='\n')
 
     print()
     print(f'======= object 클래스의 정보 =======\n'
